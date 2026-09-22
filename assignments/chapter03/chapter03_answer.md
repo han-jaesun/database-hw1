@@ -69,13 +69,7 @@ DBeaver는: 그 PostgreSQL 서버에 접속해서 SQL을 보내고 결과를 눈
 
 ### 연결 성공 화면
 
-권장 이미지 경로:
-
-```text
-assignments/chapter03/images/step02_connection.png
-```
-https://github.com/han-jaesun/database-hw1/blob/main/assignments/chapter03/스크린샷%202026-09-22%20오후%2010.35.23.png
-`여기에 연결 성공 화면을 삽입하세요.`
+![연결 성공 화면](./스크린샷%202026-09-22%20오후%2010.35.23.png)
 
 ## 2-2. 첫 SQL 실행
 
@@ -172,7 +166,7 @@ SELECT current_database();
 실제 결과:
 
 ```text
-
+postgres
 ```
 
 - [ ] 결과가 `ai_database_book`이다.
@@ -498,6 +492,7 @@ GitHub에 공개 저장소로 올리면 전 세계 누구나 그 내용을 볼 �
 
 4. AI를 오류 해결에 사용할 때 가장 중요한 것은
    AI가 제안한 원인이나 해결책을 그대로 믿지 않고, 실제로 다시 실행해서 결과가 맞는지 직접 눈으로 확인하는 것 이다.
+```
 
 ---
 
@@ -530,7 +525,7 @@ https://github.com/<본인-GitHub-ID>/<본인-저장소>/blob/main/assignments/c
 내 제출 URL:
 
 ```text
-https://github.com/han-jaesun/database-hw1/edit/main/assignments/chapter03/chapter03_answer.md
+https://github.com/han-jaesun/database-hw1/blob/main/assignments/chapter03/chapter03_answer.md
 ```
 
 > 저장소 메인 URL, 교수자 템플릿 URL, Raw URL이 아니라 **작성 완료된 본인 `chapter03_answer.md` 파일 화면 URL**을 제출합니다.
