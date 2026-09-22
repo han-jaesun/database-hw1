@@ -260,43 +260,53 @@ code/chapter03/setup_validate_local.sql
 
 ## 6-1. `setup_check.sql`
 
+```text
+이 파일을 저장소에서 직접 찾지 못해, 교재 본문(12.1절)에 설명된 확인 항목을 그대로 재현하는 SQL을 직접 작성해서 실행했다.
+```
 실행 결과에서 확인한 항목:
 
 ```text
-PostgreSQL 버전:
-현재 DB:
-현재 사용자:
-현재 스키마:
-search_path:
-읽기 전용 여부:
-TimeZone:
-1 + 1 결과:
-public 스키마 존재 여부:
-public USAGE 권한:
-public CREATE 권한:
+PostgreSQL 버전: PostgreSQL 18.6 (Homebrew)
+현재 DB: ai_database_book
+현재 사용자: hanjaesun
+현재 스키마: public
+search_path: public, "$user"
+읽기 전용 여부: off
+TimeZone: Asia/Seoul
+1 + 1 결과: 2
+public 스키마 존재 여부: (아직 별도 확인 안 함, 6-2에서 확인)
+public USAGE 권한: (아직 별도 확인 안 함, 6-2에서 확인)
+public CREATE 권한: (아직 별도 확인 안 함, 6-2에서 확인)
 ```
 
 ### 이 파일을 여러 번 실행해도 비교적 안전한 이유
 
 ```text
-
+이 파일을 여러 번 실행해도 비교적 안전한 이유: 모두 SELECT나 SHOW 같은 조회성 명령이라, 실제 데이터를 만들거나 지우지 않기 때문이다. 몇 번을 실행해도 결과만 다시 보여줄 뿐 부작용이 없다.
 ```
 
 ## 6-2. `setup_validate_local.sql`
 
 ```text
-실행 결과:
-PASS / FAIL:
+원본 파일을 찾지 못해, 본문에 나온 검증 항목(버전 15 이상, DB=ai_database_book, public 스키마 존재, USAGE/CREATE 권한, 읽기전용 아님, 계산 정상)을 직접 SQL로 재현해서 실행했다.
 ```
 
-실패했다면 실패 항목:
-
+```text
+실행 결과:
+version_ok: true (PostgreSQL 18.6이므로 15 이상 조건 만족)
+database_ok: true (현재 DB가 ai_database_book)
+public_schema_exists: true
+usage_ok: true
+create_ok: true
+transaction_read_only: off (읽기 전용 아님)
+calc_ok: true (1+1=2 정상)
+PASS / FAIL: PASS (모든 항목이 true 또는 정상값으로 확인됨)
+```
+실패했다면 실패 항목: 없음 (모든 항목 통과)
 ```text
 
 ```
-
-그 실패가 실제 문제인지 환경 차이인지 판단한 근거:
-
+그 실패가 실제 문제인지 환경 차이인지 판단한 근거: 해당 없음 (전부 통과했으므로 실패 항목 자체가 없었다)
 ```text
 
 ```
@@ -370,7 +380,8 @@ SELECT current_database(); → ai_database_book 반환됨
 
 비밀번호·개인정보·전체 접속 URL은 제거하고 기록합니다.
 
-```text
+```"이게 왜 오류인가?" (SELEC 1; 를 실행했을 때 뜬 오류 메시지 캡처와 함께 질문함)
+
 
 ```
 
@@ -378,32 +389,32 @@ SELECT current_database(); → ai_database_book 반환됨
 
 | AI가 제안한 확인 방법 | 실제로 확인했는가? | 결과 | 수용 / 수정 / 거절 |
 | --- | --- | --- | --- |
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+| AI가 "breadcrumb에서 ai-database-book 클릭 후 code 폴더에 setup_check.sql이 있을 것"이라고 추측 | 직접 GitHub 저장소를 확인함 | 해당 경로에 파일이 없었음 (검색으로도 못 찾음) | 거절 — AI의 추측이 틀렸음을 확인하고, 대신 교재 본문 내용을 바탕으로 동등한 SQL을 직접 작성하는 방식으로 대체함 |
+| SELEC → SELECT 오타로 인한 SQL 문법 오류라는 진단 | SELEC을 SELECT로 고쳐서 재실행함 | 정상 실행됨 (결과 1 반환) | 수용 |
+| 수정 후 SELECT 1;과 SELECT current_database(); 로 재검증해보라는 제안 | 두 문장을 실행함 | 둘 다 오류 없이 정상 실행됨 | 수용 |
 
 ### AI가 오류 원인을 너무 빨리 단정한 부분이 있었나요?
 
 ```text
-
+AI는 오류 메시지를 보자마자 바로 원인을 알려주지 않고, 나에게 먼저 "왜 오류가 났다고 생각하는지" 스스로 추측해보라고 물어봤다. 그래서 오류 메시지를 먼저 내 나름대로 읽어본 뒤에 정확한 설명을 들을 수 있었고, AI가 성급하게 단정 짓지 않은 점이 오히려 이해하는 데 도움이 됐다.
 ```
 
 ### 오류 메시지와 실제 환경 중 무엇을 확인해서 최종 판단했나요?
 
 ```text
-
+오류 메시지 자체("syntax error at or near SELEC")가 원인을 정확히 가리키고 있어서, 메시지를 읽는 것만으로 원인 판단이 가능했다. 다만 그 판단이 맞는지는 실제로 SELECT로 고쳐서 재실행한 결과(정상 작동)로 다시 한번 확인했다. 즉 메시지로 원인을 추정하고, 실제 실행 결과로 그 추정을 검증하는 순서로 판단했다.
 ```
 
 ### AI 활용에서 가장 유용했던 점
 
 ```text
-
+오류 메시지가 무슨 뜻인지 바로바로 설명해줘서 막히지 않고 다음 단계로 넘어갈 수 있었다. 특히 정답을 바로 알려주기보다 먼저 스스로 추측해보게 유도한 점이, 단순히 따라 치는 것보다 실제로 이해하는 데 더 도움이 됐다.
 ```
 
 ### AI 답변을 그대로 실행하지 않고 확인해야 하는 이유
 
 ```text
-
+AI가 "이게 원인일 것"이라고 설명해줘도, 실제로 고쳐서 다시 실행해보기 전까지는 그게 진짜 맞는 해결책인지 알 수 없다. SELECT로 고친 다음 재검증 SQL(SELECT 1;, SELECT current_database();)을 직접 실행해서 결과를 눈으로 확인하고 나서야 해결됐다고 확신할 수 있었다. 즉 AI의 설명은 방향을 잡는 데는 유용하지만, 최종 확인은 항상 직접 실행한 결과로 해야 한다.
 ```
 
 ---
@@ -413,50 +424,60 @@ SELECT current_database(); → ai_database_book 반환됨
 앞에서 선택한 개인 서비스가 PostgreSQL을 사용한다고 가정합니다.
 
 ```text
-서비스 이름:
+서비스 이름: 나만의 독서 기록장
 
-사용할 데이터베이스 이름 후보:
+사용할 데이터베이스 이름 후보: booklog
 
-사용할 스키마 이름 후보:
+사용할 스키마 이름 후보: public
 
 앞으로 만들고 싶은 테이블 후보 3개:
-1.
-2.
-3.
+1. books (내가 읽었거나 읽고 있거나 읽고 싶은 책 목록)
+2. reviews (책에 대한 감상평)
+3. reading_logs (하루하루의 독서 진행 기록)
 ```
 
 ### 아직 SQL을 만들지 않고 이름과 역할만 정하는 이유
 
 ```text
-
+아직 테이블 사이의 관계(FK), 각 열의 정확한 데이터 타입, 필수 여부(NOT NULL) 같은 세부 규칙을 확정하지 않았기 때문이다. 먼저 어떤 데이터가 필요하고 테이블끼리 어떻게 연결될지 개념적으로 정리한 다음, 이후 Chapter에서 배우는 제약조건과 관계 설계를 적용해 실제 CREATE TABLE 문을 만드는 게 순서에 맞다고 생각했다. 지금 단계에서 SQL부터 만들면, 나중에 구조가 바뀔 때마다 계속 다시 만들어야 해서 비효율적이다.
 ```
 
 ### Chapter 02에서 정리했던 한 행의 의미 중 수정할 부분이 있나요?
 
 ```text
-
+Chapter 02에서 배운 "한 행이 무엇을 의미하는지 생각하는 방식"을 내 서비스에도 그대로 적용해봤다. 예를 들어 reading_logs의 한 행은 "어떤 책을 언제 읽었는지"를 나타내는 기록 한 건이라고 정리할 수 있었다. 특별히 수정할 부분은 없었고, 같은 사고방식이 잘 적용됐다.
 ```
 
 ---
-
 # 10. 초보자용 연결 가이드 작성
 
 친구가 자신의 PC에서 같은 실습을 시작한다고 가정합니다. 아래 순서를 자신의 말로 작성합니다.
 
 ```text
 1. PostgreSQL 서버가 실행되는지 확인하는 방법:
+터미널에서 brew services start postgresql@18 명령어로 서버를 켠다. 서버가 잘 켜졌는지는 터미널에 psql --version을 쳐봐서 버전 정보가 뜨는지 확인하면 된다. 버전이 뜨면 프로그램은 설치돼 있는 거고, 실제로 접속이 되는지는 DBeaver에서 연결해봐야 확실히 알 수 있다.
 
 2. DBeaver에서 PostgreSQL 연결을 만드는 방법:
+DBeaver 왼쪽 위 플러그 모양 아이콘을 눌러서 "새 데이터베이스 연결"을 클릭한다. 목록에서 PostgreSQL을 선택하고, Host, Port, Database, Username 정보를 입력한 다음 "Test Connection" 버튼을 눌러 연결이 성공하는지 확인한다. 처음이면 PostgreSQL 드라이버를 자동으로 다운받겠냐고 물어보는데, 다운로드를 눌러주면 된다.
 
 3. Host / Port / Database / Username의 의미:
+Host는 어느 컴퓨터(서버)에 접속할지를 나타내고, 내 컴퓨터에서 직접 돌리는 경우 localhost라고 쓴다. Port는 그 서버 안에서 어느 통로로 연결할지를 나타내는 번호로, PostgreSQL은 보통 5432를 쓴다. Database는 그 서버 안에 있는 여러 데이터베이스 중 어느 것에 접속할지를 정하는 것이고, Username은 어떤 계정 권한으로 로그인할지를 나타낸다.
 
 4. ai_database_book에 연결되었는지 확인하는 방법:
+DBeaver 화면이나 탭 이름에 "ai_database_book"이라고 표시되는 것만 보고 믿으면 안 된다. 직접 SELECT current_database(); 라는 SQL을 실행해서, 결과로 실제로 "ai_database_book"이 나오는지 확인해야 한다. 실제로 해보니, 화면상으로는 연결이 잘 잡힌 것처럼 보여도 SQL 탭이 예전 연결에 그대로 남아있어서 다른 결과가 나온 적이 있었다.
 
 5. 현재 위치를 확인하는 SQL:
+SELECT current_database();
+SELECT current_user;
+SELECT current_schema();
+SHOW search_path;
+이 네 가지를 실행하면 지금 어느 데이터베이스에, 어떤 사용자로, 어떤 스키마를 기본으로 사용하는 상태인지 한눈에 확인할 수 있다.
 
 6. 한 문장과 전체 스크립트 실행을 구분해야 하는 이유:
+한 문장 실행(Cmd+Enter)은 커서가 있는 문장 하나만 실행하고, 전체 스크립트 실행은 여러 문장을 순서대로 다 실행한다. 이 둘을 헷갈리면, SELECT처럼 단순 조회는 큰 문제가 없지만 UPDATE나 DELETE 같은 데이터를 바꾸는 SQL에서는 의도치 않게 여러 문장이 한꺼번에 실행되어 데이터가 잘못 바뀔 위험이 있다. 실제로 CREATE DATABASE는 다른 SQL과 함께 실행하면 오류가 난다는 것도 직접 겪었다.
 
 7. 비밀번호를 GitHub나 AI 프롬프트에 넣으면 안 되는 이유:
+GitHub에 공개 저장소로 올리면 전 세계 누구나 그 내용을 볼 수 있어서, 비밀번호나 전체 접속 주소가 그대로 노출되면 다른 사람이 내 데이터베이스에 마음대로 접속할 수 있게 된다. AI에게 질문할 때도 비밀번호를 그대로 붙여넣으면 대화 내용에 그 정보가 남을 수 있으므로, 항상 비밀번호는 빼고 Host 일부만 마스킹해서 공유하는 습관이 필요하다.
 ```
 
 ---
@@ -467,35 +488,34 @@ SELECT current_database(); → ai_database_book 반환됨
 
 ```text
 1. DBeaver와 PostgreSQL의 가장 중요한 차이는
-   ____________________________________________________________ 이다.
+   PostgreSQL은 실제로 데이터를 저장하고 관리하는 서버(DBMS)이고, DBeaver는 그 서버에 접속해서 SQL을 작성하고 결과를 화면에 보여주는 도구일 뿐이라는 것 이다.
 
 2. 내가 지금 어느 데이터베이스에 연결되어 있는지 확인할 때
-   화면 이름만 보지 않고 ______________________________________ 해야 한다.
+   화면 이름만 보지 않고 SELECT current_database(); 같은 SQL을 직접 실행해서 실제 응답을 확인 해야 한다.
 
 3. PostgreSQL 오류가 발생했을 때 가장 먼저 해야 할 일은
-   ____________________________________________________________ 이다.
+   오류 메시지를 끝까지 읽고 어떤 종류의 문제(문법, 연결, 권한 등)인지 원인 후보를 먼저 스스로 추측해보는 것 이다.
 
 4. AI를 오류 해결에 사용할 때 가장 중요한 것은
-   ____________________________________________________________ 이다.
-```
+   AI가 제안한 원인이나 해결책을 그대로 믿지 않고, 실제로 다시 실행해서 결과가 맞는지 직접 눈으로 확인하는 것 이다.
 
 ---
 
 # 12. 제출 체크리스트
 
-- [ ] `chapter03_answer.md`의 빈 필수 항목을 작성했다.
-- [ ] PostgreSQL과 DBeaver의 역할 차이를 설명했다.
-- [ ] `current_database/current_user/current_schema/search_path`를 실제로 확인했다.
-- [ ] `ai_database_book` 연결 여부를 SQL로 검증했다.
-- [ ] SQL 실행 범위 세 가지를 비교했다.
-- [ ] `setup_check.sql`을 실행했다.
-- [ ] `setup_validate_local.sql` 결과를 확인했다.
-- [ ] 오류 원인을 먼저 스스로 추정한 뒤 AI를 사용했다.
-- [ ] AI 제안을 실제 환경에서 검증했다.
-- [ ] 핵심 캡처 3~4장만 골라 넣었다.
-- [ ] 캡처에 비밀번호·개인정보·전체 접속 URL이 없다.
-- [ ] Markdown 이미지가 GitHub 웹 화면에서 실제로 보인다.
-- [ ] 최종 답안 파일을 commit/push했다.
+- [O] `chapter03_answer.md`의 빈 필수 항목을 작성했다.
+- [O] PostgreSQL과 DBeaver의 역할 차이를 설명했다.
+- [O] `current_database/current_user/current_schema/search_path`를 실제로 확인했다.
+- [O] `ai_database_book` 연결 여부를 SQL로 검증했다.
+- [O] SQL 실행 범위 세 가지를 비교했다.
+- [O] `setup_check.sql`을 실행했다.
+- [O] `setup_validate_local.sql` 결과를 확인했다.
+- [O] 오류 원인을 먼저 스스로 추정한 뒤 AI를 사용했다.
+- [O] AI 제안을 실제 환경에서 검증했다.
+- [O] 핵심 캡처 3~4장만 골라 넣었다.
+- [O] 캡처에 비밀번호·개인정보·전체 접속 URL이 없다.
+- [O] Markdown 이미지가 GitHub 웹 화면에서 실제로 보인다.
+- [O] 최종 답안 파일을 commit/push했다.
 
 ---
 
@@ -510,7 +530,7 @@ https://github.com/<본인-GitHub-ID>/<본인-저장소>/blob/main/assignments/c
 내 제출 URL:
 
 ```text
-
+https://github.com/han-jaesun/database-hw1/edit/main/assignments/chapter03/chapter03_answer.md
 ```
 
 > 저장소 메인 URL, 교수자 템플릿 URL, Raw URL이 아니라 **작성 완료된 본인 `chapter03_answer.md` 파일 화면 URL**을 제출합니다.
