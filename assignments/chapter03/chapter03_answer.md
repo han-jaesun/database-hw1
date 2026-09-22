@@ -60,12 +60,12 @@ DBeaver는: 그 PostgreSQL 서버에 접속해서 SQL을 보내고 결과를 눈
 
 ## 2-1. DBeaver 연결 결과
 
-- [ ] PostgreSQL 연결 유형 선택
-- [ ] Host 확인
-- [ ] Port 확인
-- [ ] Database 확인
-- [ ] Username 확인
-- [ ] Test Connection 성공
+- [O] PostgreSQL 연결 유형 선택
+- [O] Host 확인
+- [O] Port 확인
+- [O] Database 확인
+- [O] Username 확인
+- [O] Test Connection 성공
 
 ### 연결 성공 화면
 
@@ -83,19 +83,19 @@ assignments/chapter03/images/step02_connection.png
 SELECT 1 + 1 AS result;
 ```
 
-실행 전 예상:
+실행 전 예상: 2가 나올 것이다.
 
 ```text
 
 ```
 
-실제 결과:
+실제 결과: result = 2
 
 ```text
 
 ```
 
-이 결과가 의미하는 것:
+이 결과가 의미하는 것: 이 결과가 의미하는 것: 1+1이라는 단순 계산이 정상적으로 실행되었다는 뜻이다. 이걸 통해 DBeaver가 PostgreSQL 서버에 실제로 연결되어 있고, SQL 명령을 서버에 전달해서 계산 결과를 정상적으로 돌려받고 있다는 것을 확인할 수 있다. 즉 "연결이 살아있다"는 걸 가장 간단한 SQL로 검증한 것이다.
 
 ```text
 
@@ -121,30 +121,30 @@ SHOW TimeZone;
 
 | 확인 항목 | 실제 결과 | 내가 이해한 의미 |
 | --- | --- | --- |
-| `version()` |  |  |
-| `current_database()` |  |  |
-| `current_user` |  |  |
-| `current_schema()` |  |  |
-| `search_path` |  |  |
-| `transaction_read_only` |  |  |
-| `TimeZone` |  |  |
+| `version()` | PostgreSQL 18.6 (Homebrew) on aarch64-apple... | 지금 서버에서 돌아가는 PostgreSQL의 버전과 빌드 정보 |
+| `current_database()` | postgres | 지금 접속해 있는 데이터베이스 이름 |
+| `current_user` | hanjaesun | 지금 로그인한 사용자 계정 |
+| `current_schema()` | public | 지금 기본으로 사용 중인 스키마 |
+| `search_path` | public, "$user" | 테이블 이름만 쓸 때 찾아볼 스키마 순서 |
+| `transaction_read_only` | off | 지금 세션에서 데이터를 쓰기(수정/생성)할 수 있는 상태라는 뜻 (off = 쓰기 가능, on이면 읽기 전용) |
+| `TimeZone` | Asia/Seoul | 이 세션에서 날짜/시간을 표시할 때 기준으로 삼는 시간대 |
 
 ## 3-2. 반드시 설명할 것
 
 ### DBeaver 연결 이름과 `current_database()`는 왜 같은 개념이 아닌가요?
-
+DBeaver의 "연결(Connection)"은 내가 원하는 대로 지어 붙인 별명(예: "postgres", "my-local-db")일 뿐, 실제 DB 이름과 다를 수 있다. 반면 current_database()는 서버가 실제로 인식하는 진짜 데이터베이스 이름이다. 예를 들어 DBeaver에서 연결 이름을 "테스트DB"라고 지어도, 실제로 postgres라는 DB에 붙어있을 수 있다. 그래서 화면의 연결 이름만 보고 판단하면 안 되고, current_database()로 직접 확인해야 정확하다.
 ```text
 
 ```
 
 ### `current_schema()`와 `search_path`는 어떤 관계가 있나요?
-
+search_path는 "스키마 이름을 안 적었을 때 찾아볼 순서 목록"이고, current_schema()는 그 목록 중에서 실제로 존재해서 "지금 기본으로 쓰이고 있는 스키마 하나"를 보여준다. 
 ```text
 
 ```
 
 ### `transaction_read_only = off`라는 결과만으로 모든 테이블을 만들 권한이 있다고 단정할 수 있나요?
-
+아니다. transaction_read_only = off는 이 세션이 "읽기 전용 모드가 아니다"라는 뜻일 뿐이고, 실제로 테이블을 만들 수 있는지는 별개의 권한(permission) 문제다. 예를 들어 세션은 쓰기 모드여도, 특정 스키마에 CREATE 권한이 없으면 테이블 생성은 실패한다. 즉 이 값은 "쓰기 시도 자체가 막혀있지 않다"만 알려줄 뿐, 구체적인 권한까지 보장하진 않는다.
 ```text
 
 ```
@@ -176,18 +176,18 @@ SELECT current_database();
 ```
 
 - [ ] 결과가 `ai_database_book`이다.
-- [ ] 다른 DB라면 올바른 연결로 전환했다.
+- [O] 다른 DB라면 올바른 연결로 전환했다.
 
 ## 4-2. 연결을 바꾼 뒤 다시 검증
 
 ```text
-전환 전 데이터베이스:
-전환 후 데이터베이스:
-전환 여부를 판단한 근거:
+전환 전 데이터베이스: postgres
+전환 후 데이터베이스: ai_database_book
+전환 여부를 판단한 근거: SELECT current_database(); 를 ai_database_book 연결로 새로 실행해서, 결과가 실제로 "ai_database_book"으로 나오는 것을 직접 확인했다. DBeaver 창 제목이나 탭 이름에 표시되는 연결명만 보고 판단하지 않았다.
 ```
 
 ### 화면에서 보이는 연결 이름만 믿지 않고 SQL을 다시 실행해야 하는 이유
-
+실제로 이번에 직접 겪었는데, SQL을 이전 postgres 탭에 이어서 입력했더니 왼쪽 연결 목록에서 ai_database_book을 눈으로 보고 있었는데도 결과는 계속 postgres로 나왔다. 즉 "어떤 연결이 화면에 보이는가"와 "지금 이 SQL 탭이 실제로 어느 연결을 통해 실행되는가"는 다를 수 있다. 눈으로 보이는 이름표는 착각을 일으킬 수 있으므로, SELECT current_database() 같은 SQL로 실제 서버 응답을 직접 확인해야 정확하다.
 ```text
 
 ```
@@ -207,30 +207,34 @@ SELECT 'C' AS step;
 ## 5-1. 한 문장 실행
 
 ```text
-내가 실행한 문장:
-실제 결과:
+내가 실행한 문장: SELECT 'A' AS step;
+실제 결과: step = A
 ```
 
 ## 5-2. 선택 영역 실행
 
 ```text
-선택한 문장:
-실제 결과:
+선택한 문장: SELECT 'A' AS step;
+SELECT 'B' AS step;
+실제 결과: step = B
 ```
 
 ## 5-3. 전체 스크립트 실행
 
 ```text
-실제 결과:
-결과 탭 또는 실행 순서에서 관찰한 점:
+실제 결과: A, B, C 세 문장이 모두 실행되었고, 각각 별도의 결과 탭(Results 1, Results 1(2), Results 1(3))으로 나뉘어 나왔다.
+
+결과 탭 또는 실행 순서에서 관찰한 점: 화면에는 기본적으로 마지막 탭(C)만 보여서 처음엔 C만 실행된 줄 알았지만, 실제로는 세 문장이 입력한 순서(A→B→C) 그대로 각각 실행되어 탭이 3개 생긴 것이었다. 탭을 직접 눌러 확인해야 전체 실행 여부를 정확히 알 수 있었다.
 ```
 
 ## 5-4. 결과 해석
 
 ```text
 한 문장 실행과 전체 스크립트 실행의 차이:
+한 문장 실행(Cmd+Enter)은 커서가 있는(또는 선택한 마지막) 문장 하나만 실행하고 결과 탭도 하나만 생긴다. 반면 전체 스크립트 실행(Execute SQL Script)은 여러 문장을 순서대로 전부 실행하고, 문장마다 결과 탭을 따로 만든다. 다만 화면에는 마지막 탭만 기본으로 보이기 때문에, 겉보기에는 "하나만 실행된 것"처럼 착각하기 쉽다는 걸 직접 경험했다.
 
 변경 SQL에서 실행 범위를 잘못 선택하면 위험한 이유:
+만약 SELECT가 아니라 UPDATE나 DELETE 같은 데이터를 바꾸는 SQL이었다면, "한 문장만 실행할 생각"으로 전체 스크립트 실행을 눌렀을 때 의도하지 않은 여러 문장이 한꺼번에 실행되어 데이터가 잘못 바뀌거나 삭제될 수 있다. 반대로 "전체를 실행했다"고 착각했는데 실제로는 한 문장만 실행되어, 뒤의 SQL이 반영 안 된 채로 다음 작업을 진행하는 실수도 생길 수 있다. 그래서 실행 버튼을 누르기 전에 항상 "지금 선택된 범위가 뭔지" 확인하는 습관이 중요하다.
 ```
 
 ### 증거 화면
@@ -314,9 +318,10 @@ SELEC 1;
 ## 7-1. 오류 기록
 
 ```text
-오류 메시지 핵심 문장:
+오류 메시지 핵심 문장: syntax error at or near "SELEC"
 
-내가 먼저 생각한 원인 1:
+
+내가 먼저 생각한 원인 1: 
 
 내가 먼저 생각한 원인 2:
 
