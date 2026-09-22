@@ -74,7 +74,7 @@ DBeaver는: 그 PostgreSQL 서버에 접속해서 SQL을 보내고 결과를 눈
 ```text
 assignments/chapter03/images/step02_connection.png
 ```
-
+https://github.com/han-jaesun/database-hw1/blob/main/assignments/chapter03/스크린샷%202026-09-22%20오후%2010.35.23.png
 `여기에 연결 성공 화면을 삽입하세요.`
 
 ## 2-2. 첫 SQL 실행
