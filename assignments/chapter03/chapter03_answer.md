@@ -34,24 +34,24 @@ GitHub 계정 또는 별칭:
 
 | 항목 | 작성 내용 |
 | --- | --- |
-| 운영체제 |  |
-| PostgreSQL 버전 |  |
-| DBeaver 버전 |  |
-| Host | 비밀정보가 아니라면 기록, 아니면 `localhost`/`마스킹` |
-| Port |  |
-| Database |  |
-| Username | 필요하면 마스킹 |
+| 운영체제 | macOS |
+| PostgreSQL 버전 | 18.6(Homebrew) |
+| DBeaver 버전 | 26.2.0 |
+| Host | localhost |
+| Port | 5432 |
+| Database | postgres |
+| Username | hanjaesun |
 
 > 비밀번호는 기록하지 않습니다.
 
 ## 1-2. PostgreSQL과 DBeaver 역할 설명
 
 ```text
-PostgreSQL은:
+PostgreSQL은: 실제로 데이터를 저장하고 관리하는 프로그램(DBMS, 서버)이다.
 
-DBeaver는:
+DBeaver는: 그 PostgreSQL 서버에 접속해서 SQL을 보내고 결과를 눈으로 보기 편하게 보여주는 클라이언트(도구)다.
 
-두 프로그램의 차이는:
+두 프로그램의 차이는: PostgreSQL 없이는 DBeaver만 있어도 데이터를 다룰 수 없고, 반대로 PostgreSQL만 있고 DBeaver가 없어도(터미널의 psql 등으로) 데이터는 다룰 수 있다. 즉 DBeaver는 필수가 아니라 "편의를 위한 도구"다.
 ```
 
 ---
